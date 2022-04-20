@@ -2,34 +2,54 @@ package by.academy.notebook.logic;
 
 import by.academy.notebook.bean.Note;
 import by.academy.notebook.bean.Notebook;
+import by.academy.notebook.view.View;
 
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public class NotebookLogic {
-    Scanner sc = new Scanner(System.in);
+import static java.lang.Integer.parseInt;
 
-    public void addNoteFromFile(Notebook notebook){
-        Note note = new Note();
-        try (FileReader reader = new FileReader("text.txt"))
-        {
-            int c;
-            String str = "";
-            while ((c = reader.read()) != -1) {
-                str = str + String.valueOf((char) c);
+public class NotebookLogic {
+    public Scanner sc = new Scanner(System.in);
+    public View view;
+
+    public void readAllNotesFromFile(Notebook notebook) {
+        try (FileReader reader = new FileReader("test.txt")){
+            BufferedReader read = new BufferedReader(reader);
+            String line = read.readLine();
+            while (line != null) {
+                String textNote = line;
+                line = read.readLine();
+                String[] date = line.split("-");
+                Note note = new Note(textNote, LocalDate.of(parseInt(date[0]),parseInt(date[1]),parseInt(date[2])));
+                notebook.getNotes().add(note);
+                line = read.readLine();
             }
-            note.setTextNote(str.trim());
         }
         catch (IOException ex) {
             ex.getMessage();
         }
-        note.setDateOfCreate(LocalDate.now());
-        notebook.getNotes().add(note);
     }
+
+//    public void addNoteFromFile(Notebook notebook){
+//        Note note = new Note();
+//        try (FileReader reader = new FileReader("text.txt"))
+//        {
+//            int c;
+//            String str = "";
+//            while ((c = reader.read()) != -1) {
+//                str = str + String.valueOf((char) c);
+//            }
+//            note.setTextNote(str.trim());
+//        }
+//        catch (IOException ex) {
+//            ex.getMessage();
+//        }
+//        note.setDateOfCreate(LocalDate.now());
+//        notebook.getNotes().add(note);
+//    }
 
     public void addNoteFromKeyboard(Notebook notebook) {
         System.out.println("Введите текст заметки.");
@@ -41,7 +61,11 @@ public class NotebookLogic {
     }
 
     public void deleteNote(Notebook notebook, int a) {
-        notebook.getNotes().remove(a);
+        if (notebook.getNotes().size() > a) {
+            notebook.getNotes().remove(a - 1);
+        } else {
+            System.out.println("Введенная запись отсутствует в записной книжке.");
+        }
     }
 
     public void writeNote(Notebook notebook){
@@ -50,8 +74,6 @@ public class NotebookLogic {
             for (Note note:notebook.getNotes()) {
                 String text = note.toString();
                 writer.write(text);
-                writer.append('\n');
-                writer.write("Next note!");
                 writer.append('\n');
             }
         }
@@ -67,24 +89,11 @@ public class NotebookLogic {
                 result.add(note);
             }
         }
-        for (Note note:result) {
-            note.toString();
-        }
+        View.showNotes(result);
     }
 
+    public void findNoteByData(Notebook notebook, String data) {
 
-
-//    public void readNote(){
-//        try (FileReader reader = new FileReader("test.txt"))
-//        {
-//            int c;
-//            while ((c=reader.read()) != -1) {
-//                System.out.print((char) c);
-//            }
-//        }
-//        catch (IOException ex) {
-//            System.out.println(ex.getMessage());
-//        }
-//    }
+    }
 
 }

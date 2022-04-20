@@ -30,7 +30,25 @@ public class Note {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Note note = (Note) o;
+
+        if (textNote != null ? !textNote.equals(note.textNote) : note.textNote != null) return false;
+        return dateOfCreate != null ? dateOfCreate.equals(note.dateOfCreate) : note.dateOfCreate == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = textNote != null ? textNote.hashCode() : 0;
+        result = 31 * result + (dateOfCreate != null ? dateOfCreate.hashCode() : 0);
+        return result;
+    }
+
+    @Override
     public String toString() {
-        return  "textNote=" + textNote + '\n'+ "dateOfCreate=" + dateOfCreate;
+        return  textNote + '\n'+ dateOfCreate;
     }
 }

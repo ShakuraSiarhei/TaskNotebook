@@ -4,15 +4,29 @@ import by.academy.notebook.bean.Note;
 import by.academy.notebook.bean.Notebook;
 import by.academy.notebook.view.View;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Scanner;
 
 public class NotebookControl {
-    Notebook notebook = new Notebook(new ArrayList<Note>());
-    NotebookLogic notebookLogic = new NotebookLogic();
+
+    private Notebook notebook = new Notebook(new ArrayList<Note>());
+    private NotebookLogic notebookLogic = new NotebookLogic();
+
+    public NotebookLogic getNotebookLogic() {
+        return notebookLogic;
+    }
+    public void setNotebookLogic(NotebookLogic notebookLogic) {
+        this.notebookLogic = notebookLogic;
+    }
+    public Notebook getNotebook() {
+        return notebook;
+    }
+    public void setNotebook(Notebook notebook) {
+        this.notebook = notebook;
+    }
 
     public void mainControlPanel(){
+        getNotebookLogic().readAllNotesFromFile(getNotebook());
         Scanner sc = new Scanner(System.in);
         System.out.println("Добро пожаловать в меню. Сделайте свой выбор.");
         System.out.println("1 - Create note");
@@ -27,25 +41,12 @@ public class NotebookControl {
             int ch = sc.nextInt();
             switch (ch) {
                 case 1:
-                    System.out.println("1 - Добавить заметку из файла.");
-                    System.out.println("2 - Ввести заметку вручную.");
-                    int ch1 = sc.nextInt();
-                    switch (ch1){
-                        case 1:
-                            notebookLogic.addNoteFromFile(notebook);
-                            break;
-                        case 2:
-                            notebookLogic.addNoteFromKeyboard(notebook);
-                            break;
-                        default:
-                            System.out.println("Введен неверный символ.");
-                            break;
-                    }
+                    getNotebookLogic().addNoteFromKeyboard(getNotebook());
                     break;
                 case 2:
-                    System.out.println("Enter note for delete");
+                    System.out.println("Введите порядковый номер записи для удаления.");
                     int a = sc.nextInt();
-                    notebookLogic.deleteNote(notebook, a); //прописать проверку наличия такой записи
+                    getNotebookLogic().deleteNote(getNotebook(), a); //прописать проверку наличия такой записи
                     break;
                 case 3:
                     System.out.println("Enter target date (year in format YYYY:");
@@ -55,17 +56,16 @@ public class NotebookControl {
                     System.out.println("Enter target date (day in format DD:");
                     int day = sc.nextInt();
                     String targetDate = year + "-" + month + "-" + day;
-                    notebookLogic.findNoteByTime(notebook, targetDate);
+                    getNotebookLogic().findNoteByTime(getNotebook(), targetDate);
                     break;
                 case 4:
-                    //rightChoice = true;
                     break;
                 case 5:
-                    View.showNotes(notebook);
+                    View.showNotes(getNotebook());
                     break;
                 case 0:
                     rightChoice = true;
-                    notebookLogic.writeNote(notebook);
+                    getNotebookLogic().writeNote(getNotebook());
                     break;
                 default:
                     break;
