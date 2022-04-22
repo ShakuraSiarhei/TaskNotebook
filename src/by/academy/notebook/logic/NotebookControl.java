@@ -4,6 +4,7 @@ import by.academy.notebook.bean.Note;
 import by.academy.notebook.bean.Notebook;
 import by.academy.notebook.view.View;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -35,9 +36,9 @@ public class NotebookControl {
         System.out.println("4 - Find note by data");
         System.out.println("5 - Show all notes");
         System.out.println("0 - exit");
-        boolean rightChoice = false;
+        boolean endOfWork = false;
 
-        while (!rightChoice) {
+        while (!endOfWork) {
             int ch = sc.nextInt();
             switch (ch) {
                 case 1:
@@ -55,17 +56,21 @@ public class NotebookControl {
                     int month = sc.nextInt();
                     System.out.println("Enter target date (day in format DD:");
                     int day = sc.nextInt();
-                    String targetDate = year + "-" + month + "-" + day;
-                    getNotebookLogic().findNoteByTime(getNotebook(), targetDate);
+                    LocalDate targetDate = LocalDate.of(year, month, day);
+                    getNotebookLogic().findNoteByTime(notebook, targetDate);
                     break;
                 case 4:
+                    System.out.println("Введите текст для поиска");
+                    sc.nextLine();
+                    String targetData = sc.nextLine();
+                    getNotebookLogic().findNoteByData(notebook, targetData);
                     break;
                 case 5:
                     View.showNotes(getNotebook());
                     break;
                 case 0:
-                    rightChoice = true;
-                    getNotebookLogic().writeNote(getNotebook());
+                    endOfWork = true;
+                    getNotebookLogic().writeNotesToFile(getNotebook());
                     break;
                 default:
                     break;

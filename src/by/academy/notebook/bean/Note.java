@@ -49,6 +49,8 @@ public class Note {
 
     @Override
     public String toString() {
-        return  textNote + '\n'+ dateOfCreate;
+        return "Note " +
+                "textNote='" + textNote + '\'' +
+                ", dateOfCreate=" + dateOfCreate;
     }
 }
