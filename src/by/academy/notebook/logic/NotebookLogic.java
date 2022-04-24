@@ -7,24 +7,26 @@ import by.academy.notebook.view.View;
 import java.io.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 import static java.lang.Integer.parseInt;
 
 public class NotebookLogic {
+
+    private File sourceFile = new File("test.txt");
     private Scanner sc = new Scanner(System.in);
-    private View view;
 
     public void readAllNotesFromFile(Notebook notebook) {
-        try (FileReader reader = new FileReader("test.txt")){
+        try (FileReader reader = new FileReader(sourceFile)){
             BufferedReader read = new BufferedReader(reader);
             String line = read.readLine();
             while (line != null) {
-                String textNote = line.replace("Note textNote='", "").replace(", dateOfCreate=", "");
-                String data2 = textNote.substring(textNote.length() - 10);
-                String text = textNote.substring(0,textNote.length()-11);
-                String[] data = data2.split("-");
-                Note note = new Note(text, LocalDate.of(parseInt(data[0]),parseInt(data[1]),parseInt(data[2])));
+                String text = line.replace("Note textNote='", "").replace(", dateOfCreate=", "");
+                String noteDate = text.substring(text.length() - 10);
+                String noteText = text.substring(0,text.length()-11);
+                String[] noteDataArray = noteDate.split("-");
+                Note note = new Note(noteText, LocalDate.of(parseInt(noteDataArray[0]),parseInt(noteDataArray[1]),parseInt(noteDataArray[2])));
                 notebook.getNotes().add(note);
                 line = read.readLine();
             }
@@ -34,55 +36,26 @@ public class NotebookLogic {
         }
     }
 
-    public void addNoteFromKeyboard(Notebook notebook) {
-        System.out.println("Введите текст заметки.");
+    public boolean addNoteFromKeyboard(Notebook notebook) {
+        View.showMessage(View.MESSAGE_CREATE);
         String str = sc.nextLine();
         boolean enterControl = true;
-        int year = 0;
-        int month = 0;
-        int day = 0;
-        while (year <= 2000 || year > 2023) {
-            System.out.println("Введите дату заметки. Год в формате YYYY (2001 - 2022):");
-            if (sc.hasNextInt()) {
-                year = sc.nextInt();
-            } else {
-                sc.nextLine();
-                continue;
-            }
-        }
-        while (month < 1 || month > 12) {
-            System.out.println("Месяц в формате MM:");
-            if (sc.hasNextInt()) {
-                month = sc.nextInt();
-            } else {
-                sc.nextLine();
-                continue;
-            }
-        }
-        while (day < 1 || day > 31) {
-            System.out.println("День в формате DD:");
-            if (sc.hasNextInt()) {
-                day = sc.nextInt();
-            } else {
-                sc.nextLine();
-                continue;
-            }
-        }
-        LocalDate date = LocalDate.of(year, month, day);
+        LocalDate date = dateEnter();
         Note note = new Note(str,date);
         notebook.getNotes().add(note);
+        return enterControl;
     }
 
     public void deleteNote(Notebook notebook, int a) {
         if (notebook.getNotes().size() >= a) {
             notebook.getNotes().remove(a - 1);
         } else {
-            System.out.println("Введенная запись отсутствует в записной книжке.");
+            View.showMessage(View.MESSAGE_NULL_RESULT);
         }
     }
 
     public void writeNotesToFile(Notebook notebook){
-        try (FileWriter writer = new FileWriter("test.txt", false))
+        try (FileWriter writer = new FileWriter(sourceFile, false))
         {
             for (Note note:notebook.getNotes()) {
                 String text = note.toString();
@@ -95,15 +68,16 @@ public class NotebookLogic {
         }
     }
 
-    public void findNoteByTime(Notebook notebook, LocalDate targetDate) {
-        ArrayList<Note> result = new ArrayList<Note>();
+    public void findNoteByTime(Notebook notebook) {
+        List<Note> result = new ArrayList<Note>();
+        LocalDate targetDate = dateEnter();
         for (Note note:notebook.getNotes()) {
             if (note.getDateOfCreate().equals(targetDate)) {
                 result.add(note);
             }
         }
         if (result.size() == 0) {
-            System.out.println("В указанную дату заметок нет.");
+            View.showMessage(View.MESSAGE_NULL_RESULT);
         }
         View.showNotes(result);
     }
@@ -116,9 +90,45 @@ public class NotebookLogic {
             }
         }
         if (result.size() == 0) {
-            System.out.println("Нет заметок с запрошенным содержанием.");
+            View.showMessage(View.MESSAGE_NULL_RESULT);
         }
         View.showNotes(result);
+    }
+
+    public LocalDate dateEnter(){
+        int year = 0;
+        int month = 0;
+        int day = 0;
+        while (year <= 2000 || year > 2023) {
+            View.showMessage(View.MESSAGE_YEAR);
+            if (sc.hasNextInt()) {
+                year = sc.nextInt();
+            } else {
+                sc.nextLine();
+                continue;
+            }
+        }
+        while (month < 1 || month > 12) {
+            View.showMessage(View.MESSAGE_MONTH);
+            if (sc.hasNextInt()) {
+                month = sc.nextInt();
+            } else {
+                sc.nextLine();
+                continue;
+            }
+        }
+        while (day < 1 || day > 31) {
+            View.showMessage(View.MESSAGE_DAY);
+            if (sc.hasNextInt()) {
+                day = sc.nextInt();
+                sc.nextLine();
+            } else {
+                sc.nextLine();
+                continue;
+            }
+        }
+        LocalDate date = LocalDate.of(year, month, day);
+        return date;
     }
 
 }
