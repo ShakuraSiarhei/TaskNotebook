@@ -3,7 +3,6 @@ package by.academy.notebook.view;
 import by.academy.notebook.bean.Note;
 import by.academy.notebook.bean.Notebook;
 
-import java.security.PublicKey;
 import java.util.List;
 
 public class View {
@@ -15,12 +14,12 @@ public class View {
 
     public static void showMainMenu(){
         System.out.println("Добро пожаловать в меню. Сделайте свой выбор.");
-        System.out.println("1 - Create note");
-        System.out.println("2 - Delete note by number");
-        System.out.println("3 - Show notes by time");
-        System.out.println("4 - Find note by data");
-        System.out.println("5 - Show all notes");
-        System.out.println("0 - exit");
+        System.out.println("1 - Создать заметку.");
+        System.out.println("2 - Удалить заметку по номеру в общем списке.");
+        System.out.println("3 - Показать заметки на определенную дату.");
+        System.out.println("4 - Показать заметки с определенным содержанием.");
+        System.out.println("5 - Показать все заметки.");
+        System.out.println("0 - Выход.");
     }
 
     public static void showMessage(String message){

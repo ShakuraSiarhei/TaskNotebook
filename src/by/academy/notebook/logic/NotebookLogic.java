@@ -21,6 +21,7 @@ public class NotebookLogic {
         try (FileReader reader = new FileReader(sourceFile)){
             BufferedReader read = new BufferedReader(reader);
             String line = read.readLine();
+
             while (line != null) {
                 String text = line.replace("Note textNote='", "").replace(", dateOfCreate=", "");
                 String noteDate = text.substring(text.length() - 10);
@@ -30,20 +31,24 @@ public class NotebookLogic {
                 notebook.getNotes().add(note);
                 line = read.readLine();
             }
+
         }
+
         catch (IOException ex) {
             ex.getMessage();
         }
+
     }
 
-    public boolean addNoteFromKeyboard(Notebook notebook) {
+    public void addNoteFromKeyboard(Notebook notebook) {
         View.showMessage(View.MESSAGE_CREATE);
+
         String str = sc.nextLine();
-        boolean enterControl = true;
         LocalDate date = dateEnter();
         Note note = new Note(str,date);
+
         notebook.getNotes().add(note);
-        return enterControl;
+
     }
 
     public void deleteNote(Notebook notebook, int a) {
@@ -52,10 +57,11 @@ public class NotebookLogic {
         } else {
             View.showMessage(View.MESSAGE_NULL_RESULT);
         }
+
     }
 
     public void writeNotesToFile(Notebook notebook){
-        try (FileWriter writer = new FileWriter(sourceFile, false))
+        try (FileWriter writer = new FileWriter(sourceFile))
         {
             for (Note note:notebook.getNotes()) {
                 String text = note.toString();
@@ -64,22 +70,26 @@ public class NotebookLogic {
             }
         }
         catch (IOException ex) {
-            System.out.println(ex.getMessage());
+            ex.getMessage();
         }
     }
 
     public void findNoteByTime(Notebook notebook) {
         List<Note> result = new ArrayList<Note>();
         LocalDate targetDate = dateEnter();
+
         for (Note note:notebook.getNotes()) {
             if (note.getDateOfCreate().equals(targetDate)) {
                 result.add(note);
             }
         }
+
         if (result.size() == 0) {
             View.showMessage(View.MESSAGE_NULL_RESULT);
+        } else {
+            View.showNotes(result);
         }
-        View.showNotes(result);
+
     }
 
     public void findNoteByData(Notebook notebook, String data) {
@@ -91,16 +101,20 @@ public class NotebookLogic {
         }
         if (result.size() == 0) {
             View.showMessage(View.MESSAGE_NULL_RESULT);
+        } else {
+            View.showNotes(result);
         }
-        View.showNotes(result);
+
     }
 
     public LocalDate dateEnter(){
         int year = 0;
         int month = 0;
         int day = 0;
+
         while (year <= 2000 || year > 2023) {
             View.showMessage(View.MESSAGE_YEAR);
+
             if (sc.hasNextInt()) {
                 year = sc.nextInt();
             } else {
@@ -108,8 +122,10 @@ public class NotebookLogic {
                 continue;
             }
         }
+
         while (month < 1 || month > 12) {
             View.showMessage(View.MESSAGE_MONTH);
+
             if (sc.hasNextInt()) {
                 month = sc.nextInt();
             } else {
@@ -117,8 +133,10 @@ public class NotebookLogic {
                 continue;
             }
         }
+
         while (day < 1 || day > 31) {
             View.showMessage(View.MESSAGE_DAY);
+
             if (sc.hasNextInt()) {
                 day = sc.nextInt();
                 sc.nextLine();
@@ -127,6 +145,7 @@ public class NotebookLogic {
                 continue;
             }
         }
+
         LocalDate date = LocalDate.of(year, month, day);
         return date;
     }

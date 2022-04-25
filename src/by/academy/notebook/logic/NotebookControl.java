@@ -25,6 +25,8 @@ public class NotebookControl {
             switch (ch) {
                 case 1:
                     notebookLogic.addNoteFromKeyboard(notebook);
+                    View.showMessage("Заметка создана.\n");
+                    View.showMainMenu();
                     break;
                 case 2:
                     View.showMessage("Введите порядковый номер записи для удаления.");
